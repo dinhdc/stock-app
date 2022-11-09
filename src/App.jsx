@@ -12,6 +12,8 @@ import "./app.css";
 import Stock from "./pages/Stock";
 import StockCode from "./pages/StockCode";
 import SignUp from "./pages/SignUp";
+import { useSelector } from "react-redux";
+import Login from "./pages/Login";
 
 const { Header, Sider, Content } = Layout;
 const App = () => {
@@ -65,54 +67,70 @@ const App = () => {
   ];
   const [collapsed, setCollapsed] = useState(false);
   const [activeRouter, setActiveRouter] = useState(listUrl[0].key);
+  const isLogin = useSelector((state) => state.users.isLogin);
 
   return (
-    <Layout
-      style={{
-        height: "100vh",
-      }}
-    >
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo" />
-        <Menu
-          theme="dark"
-          mode="inline"
-          defaultSelectedKeys={activeRouter}
-          items={listUrl}
-          onClick={hanleClick}
-        />
-      </Sider>
-      <Layout className="site-layout" style={{ width: 0 }}>
-        <Header
-          className="site-layout-background"
+    <>
+      {isLogin ? (
+        <Layout
           style={{
-            paddingLeft: 20,
+            height: "100vh",
           }}
         >
-          {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: "trigger",
-              onClick: () => setCollapsed(!collapsed),
-            }
-          )}
-        </Header>
-        <Content
-          className="site-layout-background"
+          <Sider trigger={null} collapsible collapsed={collapsed}>
+            <div className="logo" />
+            <Menu
+              theme="dark"
+              mode="inline"
+              defaultSelectedKeys={activeRouter}
+              items={listUrl}
+              onClick={hanleClick}
+            />
+          </Sider>
+          <Layout className="site-layout" style={{ width: 0 }}>
+            <Header
+              className="site-layout-background"
+              style={{
+                paddingLeft: 20,
+              }}
+            >
+              {React.createElement(
+                collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+                {
+                  className: "trigger",
+                  onClick: () => setCollapsed(!collapsed),
+                }
+              )}
+            </Header>
+            <Content
+              className="site-layout-background"
+              style={{
+                margin: "24px 16px",
+                padding: 24,
+                minHeight: 280,
+              }}
+            >
+              <Routes>
+                <Route path="/" element={<Stock />} />
+                <Route path="/code" element={<StockCode />} />
+              </Routes>
+            </Content>
+          </Layout>
+        </Layout>
+      ) : (
+        <Layout
           style={{
-            margin: "24px 16px",
-            padding: 24,
-            minHeight: 280,
+            height: "100vh",
+            paddingTop: "100px",
           }}
         >
           <Routes>
-            <Route path="/" element={<Stock />} />
-            <Route path="/code" element={<StockCode />} />
-            <Route path="/sign-up" element={<SignUp />} />
+            <Route path="/" element={<SignUp />} />
+            <Route path="/sign-in" element={<Login />} />
           </Routes>
-        </Content>
-      </Layout>
-    </Layout>
+        </Layout>
+      )}
+    </>
   );
 };
 export default App;
